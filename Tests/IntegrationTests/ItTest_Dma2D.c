@@ -162,9 +162,21 @@ void It_Dma2D_R2M_FillsRectangleWithLineOffset( void )
     {
         for( uint32_t colIdx = 0u; IT_DMA2D_FRAME_WIDTH > colIdx; colIdx++ )
         {
-            const uint32_t inside = ( ( 1u <= lineIdx ) && ( 3u >= lineIdx ) && ( 2u <= colIdx ) && ( 6u >= colIdx ) ) ? 1u : 0u;
+            uint32_t expected = IT_DMA2D_SENTINEL_16;
 
-            TEST_ASSERT_EQUAL_HEX16( ( 0u != inside ) ? 0x1234u : IT_DMA2D_SENTINEL_16, itDma2D_Frame16[ ( lineIdx * IT_DMA2D_FRAME_WIDTH ) + colIdx ] );
+            if( ( 1u <= lineIdx ) &&
+                ( 3u >= lineIdx ) &&
+                ( 2u <= colIdx  ) &&
+                ( 6u >= colIdx  )    )
+            {
+                expected = 0x1234u;
+            }
+            else
+            {
+                /* No action required */
+            }
+
+            TEST_ASSERT_EQUAL_HEX16( expected, itDma2D_Frame16[ ( lineIdx * IT_DMA2D_FRAME_WIDTH ) + colIdx ] );
         }
     }
 }
@@ -227,8 +239,19 @@ void It_Dma2D_M2M_CopiesBlock( void )
     {
         for( uint32_t colIdx = 0u; IT_DMA2D_FRAME_WIDTH > colIdx; colIdx++ )
         {
-            const uint32_t inside   = ( ( 4u <= lineIdx ) && ( 6u >= lineIdx ) && ( 5u <= colIdx ) && ( 8u >= colIdx ) ) ? 1u : 0u;
-            const uint32_t expected = ( 0u != inside ) ? itDma2D_Source32[ ( ( lineIdx - 2u ) * IT_DMA2D_FRAME_WIDTH ) + ( colIdx - 2u ) ] : IT_DMA2D_SENTINEL_32;
+            uint32_t expected = IT_DMA2D_SENTINEL_32;
+
+            if( ( 4u <= lineIdx ) &&
+                ( 6u >= lineIdx ) &&
+                ( 5u <= colIdx  ) &&
+                ( 8u >= colIdx  )    )
+            {
+                expected = itDma2D_Source32[ ( ( lineIdx - 2u ) * IT_DMA2D_FRAME_WIDTH ) + ( colIdx - 2u ) ];
+            }
+            else
+            {
+                /* No action required */
+            }
 
             TEST_ASSERT_EQUAL_HEX32( expected, itDma2D_Frame32[ ( lineIdx * IT_DMA2D_FRAME_WIDTH ) + colIdx ] );
         }
@@ -573,7 +596,10 @@ static void It_Dma2D_Wait_ClutLoaded( void )
 {
     dma2d_FunctionState_t loadState = DMA2D_FUNCTION_ACTIVE;
 
-    for( uint32_t loopIdx = 0u; ( IT_DMA2D_WAIT_LOOPS > loopIdx ) && ( DMA2D_FUNCTION_ACTIVE == loadState ); loopIdx++ )
+    for( uint32_t loopIdx = 0u;
+         ( IT_DMA2D_WAIT_LOOPS > loopIdx ) &&
+         ( DMA2D_FUNCTION_ACTIVE == loadState );
+         loopIdx++ )
     {
         Dma2D_Task();
 
