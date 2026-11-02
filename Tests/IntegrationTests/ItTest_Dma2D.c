@@ -596,7 +596,10 @@ static void It_Dma2D_Wait_ClutLoaded( void )
 {
     dma2d_FunctionState_t loadState = DMA2D_FUNCTION_ACTIVE;
 
-    for( uint32_t loopIdx = 0u; ( IT_DMA2D_WAIT_LOOPS > loopIdx ) && ( DMA2D_FUNCTION_ACTIVE == loadState ); loopIdx++ )
+    for( uint32_t loopIdx = 0u;
+         ( IT_DMA2D_WAIT_LOOPS   >  loopIdx   ) &&
+         ( DMA2D_FUNCTION_ACTIVE == loadState );
+         loopIdx++ )
     {
         Dma2D_Task();
 
